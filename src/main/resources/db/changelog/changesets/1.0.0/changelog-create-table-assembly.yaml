@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-assembly
+      author: Gabriel Lopes
+      changes:
+        - createTable:
+            tableName: assembly
+            columns:
+              - column:
+                  name: id
+                  type: binary(16)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: DATETIME(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: DATETIME(3)
+                  constraints:
+                    nullable: false
+
+
+        - insert:
+            tableName: assembly
+            dbms: 'mysql'
+            columns:
+              - column:
+                  name: id
+                  valueComputed: unhex(replace('73a45ab4-cda9-4ae2-aaaa-1344632c88fe','-',''))
+              - column:
+                  name: description
+                  value: Ata Default
+              - column:
+                  name: date
+                  value: now()
+              - column:
+                  name: creation_date
+                  value: now()

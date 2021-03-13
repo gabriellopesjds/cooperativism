@@ -1,0 +1,289 @@
+openapi: 3.0.1
+
+info:
+  title: Cooperativism API
+  description: Este é um servidor de teste. Para obter mais informações sobre o desenvolvimento
+    acessar [http://swagger.io](http://swagger.io).
+  contact:
+    email: gabriel.lopesjds@gmail.com
+  version: 1.0.0
+
+servers:
+- url: http://localhost:8080/api
+
+paths:
+  /v1/stave:
+    post:
+      summary: "Stave registration."
+      description: "Register an stave."
+      tags:
+        - Stave
+      operationId: registerStave
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaveRequest'
+      responses:
+        '201':
+          description: "Registration request created"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/StaveResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+  
+  /v1/assembly:
+    post:
+      summary: "Stave registration."
+      description: "Register an stave."
+      tags:
+        - Assembly
+      operationId: registerAssembly
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssemblyRequest'
+      responses:
+        '201':
+          description: "Registration request created"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssemblyResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'        
+
+components:
+  schemas:
+    Error:
+      type: object
+      description: 'An error when processing a request.'
+      properties:
+          code:
+              description: 'The error code.'
+              type: string
+              example: NotNull
+          message:
+              description: 'The error message.'
+              type: string
+              example: 'receiver.receiverTaxId: cannot be null'
+          field:
+              description: 'The field or attribute the error is related with.'
+              type: string
+              example: 'receiver.receiverTaxId'
+          action:
+              description: 'Action that may be performed to solve the issue, if any.'
+              type: string
+      required:
+          - code
+          - message
+    
+    Errors:
+      type: object
+      description: 'A collection of errors when processing a request.'
+      properties:
+          error:
+              type: array
+              items:
+                  $ref: '#/components/schemas/Error'
+    
+    BadRequest:
+      description: 'Bad request.'
+      $ref: '#/components/schemas/Errors'
+
+    InternalServerError:
+      description: 'Internal server error.'
+      $ref: '#/components/schemas/Errors'
+      
+    TypePersonEnum:
+      description: |
+          The person type:
+            * `NATURAL_PERSON` - Type of natural person
+            * `LEGAL_PERSON` - Type of legal person
+      type: string
+      enum:
+          - NATURAL_PERSON
+          - LEGAL_PERSON
+      example: NATURAL_PERSON    
+
+    AssociatedBase:
+      type: object
+      properties:
+        typePerson:
+          $ref: '#/components/schemas/TypePersonEnum'
+        name:
+          description: "Associate name"
+          type: string
+          example: "Gabriel Lopes"
+        taxId:
+          description: 'The tax id (CPF/CNPJ) of the associated.'
+          type: string
+          pattern: (^\d{3}\.\d{3}\.\d{3}\-\d{2}$)|(^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$)|(^\d{11})|(^\d{14})
+          example: '65732190074'
+    
+    AssociatedResponse:
+      allOf:
+        - $ref: '#/components/schemas/AssociatedBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: "Associated identifier"
+              example: "1309dadb-44dd-4792-a06e-1ab9f14a1b27"
+        
+    AssociatedResponseWrapper:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AssociatedResponse'      
+          
+    AssemblyBaseResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Associated identifier"
+          example: "1309dadb-44dd-4792-a06e-1ab9f14a1b27"
+        description:
+          type: string
+          description: "Assembly description"
+          example: "Assembleia 2021"
+        date:
+          type: string
+          format: date-time
+          description: "Meeting date and time"
+          example: '2021-03-21T03:00:00'
+        creationDate:
+          type: string
+          format: date-time
+          description: "Assembly creation date"
+          example: '2021-03-21T03:00:00'  
+      required:
+        - 'id'
+        - 'description'
+        - 'date'
+        - 'creationDate'
+    
+    AssemblyBaseRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: "Assembly description"
+          example: "Assembleia 2021"
+          maxLength: 255
+          minLength: 1
+        date:
+          type: string
+          format: date-time
+          description: "Meeting date and time"
+          example: '2021-03-21T03:00:00'
+      required:
+        - 'description'
+        - 'date'
+        
+    AssemblyResponse:
+      allOf:
+        - $ref: '#/components/schemas/AssemblyBaseResponse'
+        - type: object
+          properties:
+            staves:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/StaveBaseResponse'
+      
+    AssemblyResponseWrapper:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AssemblyResponse'
+    
+    AssemblyRequest:
+      description: 'An assembly register request.'
+      allOf:
+        - $ref: '#/components/schemas/AssemblyBaseRequest'
+        - type: object
+          properties:
+            staves:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/StaveBaseRequest'
+
+    StaveBaseResponse:
+      type: object
+      description: 'Stave basic data'
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Stave identifier"
+          example: "1309dadb-44dd-4792-a06e-1ab9f14a1b27"
+        theme:
+          description: "Theme that will be discussed in the agenda"
+          type: string
+          example: "Theme that will be discussed in the agenda"
+        description:
+          type: string
+          description: Descrição da Stave
+          example: "Theme that will be discussed in the stave"
+      required:
+        - 'id'
+        - 'theme'
+    
+    StaveBaseRequest:
+      type: object
+      description: 'Stave basic data'
+      properties:
+        theme:
+          description: "Theme that will be discussed in the agenda"
+          type: string
+          example: "Theme that will be discussed in the agenda"
+          maxLength: 100
+          minLength: 1
+        description:
+          type: string
+          description: Descrição da Stave
+          example: "Theme that will be discussed in the stave"
+          maxLength: 255
+      required:
+        - 'theme'
+    
+    StaveResponse:
+      description: "A response of an Stave register request."
+      allOf:
+        - $ref: '#/components/schemas/StaveBaseResponse'
+        - type: object
+          properties:
+            assembly:
+              $ref: '#/components/schemas/AssemblyBaseResponse'
+              
+    StaveResponseWrapper:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/StaveResponse'
+    
+    StaveRequest:
+      description: 'An Stave register request.'
+      allOf:
+        - $ref: '#/components/schemas/StaveBaseRequest'
+        - type: object
+          properties:
+            idAssembly:
+              type: string
+              format: uuid
+              description: "Assembly identifier"
+              example: "73a45ab4-cda9-4ae2-aaaa-1344632c88fe"
+          required:
+            - 'idAssembly'
