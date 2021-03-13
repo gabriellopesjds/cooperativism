@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: changelog-create-table-assembly.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelog-create-table-stave.yaml
+      relativeToChangelogFile: true
