@@ -1,13 +1,18 @@
 package com.gabriellopesjds.cooperativism.utils;
 
 import com.gabriellopesjds.api.model.AssemblyBaseResponseDTO;
+import com.gabriellopesjds.api.model.PageResultDTO;
+import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
+import com.gabriellopesjds.api.model.StaveUpdateRequestDTO;
 import com.gabriellopesjds.cooperativism.assembly.domain.model.Assembly;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 public class UtilsTest {
@@ -18,6 +23,11 @@ public class UtilsTest {
     public static final LocalDateTime FIXED_TIMESTAMP = LocalDateTime.of(2021, 3, 30, 10, 30);
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String THEME = "THEME";
+    public static final Integer PAGE_SIZE = 10;
+    public static final Integer PAGE_NUMBER = 0;
+    public static final String SORT_DIRECTION = "DESC";
+    public static final String SORT_BY = "DESCRIPTION";
+
 
     public static Assembly mockAssembly() {
         Assembly assembly = new Assembly();
@@ -61,5 +71,19 @@ public class UtilsTest {
             .description(stave.getDescription())
             .theme(stave.getTheme())
             .assembly(assemblyDTO);
+    }
+
+    public static StaveUpdateRequestDTO mockStaveUpdateRequestDTO() {
+        StaveUpdateRequestDTO staveRequestDTO = new StaveUpdateRequestDTO();
+        staveRequestDTO.setTheme(THEME);
+        staveRequestDTO.setDescription(DESCRIPTION);
+        return staveRequestDTO;
+    }
+
+    public static StavePageableResponseDTO mockStavePageableResponseDTO(){
+        StavePageableResponseDTO stavePageableResponseDTO = new StavePageableResponseDTO();
+        stavePageableResponseDTO.setStaves(Collections.singletonList(mockStaveResponseDTO(mockStaveDefault())));
+        stavePageableResponseDTO.setPageResult(new PageResultDTO());
+        return stavePageableResponseDTO;
     }
 }

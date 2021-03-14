@@ -16,7 +16,7 @@ public class HttpMessageNotReadableExceptionHandler extends AbstractExceptionHan
     @Override
     public ResponseEntity<BaseResponse<Object>> handleException(HttpMessageNotReadableException exception) {
         ErrorDetailResponse detail = ErrorDetailResponse.builder()
-            .message("invalid body")
+            .message(exception.getCause().getMessage())
             .build();
 
         List<ErrorDetailResponse> responseList = Collections.singletonList(detail);

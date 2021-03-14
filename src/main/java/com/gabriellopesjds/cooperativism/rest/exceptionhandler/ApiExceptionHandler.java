@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 @ControllerAdvice
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ApiExceptionHandler {
@@ -17,6 +19,7 @@ public class ApiExceptionHandler {
     private final BusinessExceptionHandler businessExceptionHandler;
     private final HttpMessageNotReadableExceptionHandler httpMessageNotReadableExceptionHandler;
     private final MethodArgumentNotValidExceptionHandler methodArgumentNotValidExceptionHandler;
+    private final ConstraintViolationExceptionHandler constraintViolationExceptionHandler;
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<BaseResponse<Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException exception){
@@ -33,4 +36,8 @@ public class ApiExceptionHandler {
         return businessExceptionHandler.handleException(exception);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<BaseResponse<Object>> handleBusinessException(ConstraintViolationException exception){
+        return constraintViolationExceptionHandler.handleException(exception);
+    }
 }

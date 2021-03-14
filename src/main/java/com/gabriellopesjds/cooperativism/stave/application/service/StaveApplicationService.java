@@ -1,18 +1,29 @@
 package com.gabriellopesjds.cooperativism.stave.application.service;
 
+import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
+import com.gabriellopesjds.api.model.StaveUpdateRequestDTO;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
+import com.gabriellopesjds.cooperativism.stave.domain.service.DeleteStaveService;
+import com.gabriellopesjds.cooperativism.stave.domain.service.FinderStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.RegisterStaveService;
+import com.gabriellopesjds.cooperativism.stave.domain.service.UpdateStaveService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class StaveApplicationService {
 
     private final RegisterStaveService registerStaveService;
+    private final UpdateStaveService updateStaveService;
+    private final FinderStaveService finderStaveService;
+    private final DeleteStaveService deleteStaveService;
     private final StaveFactory staveFactory;
 
     public StaveResponseDTO registerStave(StaveRequestDTO staveRequestDTO) {
@@ -20,4 +31,24 @@ public class StaveApplicationService {
         return staveFactory.buildResponse(stave);
     }
 
+    public StavePageableResponseDTO finderAllStave(Integer pageSize,
+                                                   Integer pageNumber,
+                                                   String sortDirection,
+                                                   String sortBy) {
+        Page<Stave> page = finderStaveService.finderAllStave(pageSize, pageNumber, sortDirection, sortBy);
+        return staveFactory.buildResponse(page);
+    }
+
+    public StaveResponseDTO findStave(UUID id) {
+        return staveFactory.buildResponse(finderStaveService.findById(id));
+    }
+
+    public void deleteStave(UUID id) {
+        deleteStaveService.delete(id);
+    }
+
+    public StaveResponseDTO updateStave(UUID id, StaveUpdateRequestDTO staveUpdateRequestDTO) {
+        Stave stave = updateStaveService.updateStave(id, staveFactory.fromValue(staveUpdateRequestDTO));
+        return staveFactory.buildResponse(stave);
+    }
 }
