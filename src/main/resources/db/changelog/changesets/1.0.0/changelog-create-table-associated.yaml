@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-associated
+      author: Gabriel Lopes
+      changes:
+        - createTable:
+            tableName: associated
+            columns:
+              - column:
+                  name: id
+                  type: binary(16)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cpf
+                  type: varchar(11)
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            columnNames: cpf
+            constraintName: UK_ASSOCIATED
+            disabled: false
+            tableName: associated
+
+        - insert:
+            tableName: associated
+            dbms: 'mysql'
+            columns:
+              - column:
+                  name: id
+                  valueComputed: unhex(replace('77a6b51e-7f96-4b5b-8627-6ecfb0c22785','-',''))
+              - column:
+                  name: name
+                  value: Gabriel Lopes
+              - column:
+                  name: cpf
+                  value: 77995351054
