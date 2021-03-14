@@ -1,6 +1,7 @@
 package com.gabriellopesjds.cooperativism.stave.domain.model;
 
 import com.gabriellopesjds.cooperativism.assembly.domain.model.Assembly;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,6 +21,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @GenericGenerator(name = "UUID_generator", strategy = "uuid2")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Stave {
 
     @Id
@@ -27,9 +29,12 @@ public class Stave {
     @Column(name = "id")
     private UUID id;
 
+
+    @EqualsAndHashCode.Include
     @Column(name = "theme")
     private String theme;
 
+    @EqualsAndHashCode.Include
     @Column(name = "description")
     private String description;
 

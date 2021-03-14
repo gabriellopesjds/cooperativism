@@ -1,16 +1,18 @@
 package com.gabriellopesjds.cooperativism.stave.domain.service;
 
 import com.gabriellopesjds.cooperativism.assembly.domain.model.Assembly;
-import com.gabriellopesjds.cooperativism.assembly.domain.service.GetterAssemblyService;
+import com.gabriellopesjds.cooperativism.assembly.domain.service.FinderAssemblyService;
 import com.gabriellopesjds.cooperativism.exception.BusinessException;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 import com.gabriellopesjds.cooperativism.stave.repository.StaveRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static com.gabriellopesjds.cooperativism.utils.UtilsTest.mockAssembly;
@@ -29,7 +31,7 @@ class RegisterStaveServiceTest {
     private StaveRepository staveRepository;
 
     @Mock
-    private GetterAssemblyService getterAssemblyService;
+    private FinderAssemblyService getterAssemblyService;
 
     @InjectMocks
     private RegisterStaveService registerStaveService;
@@ -42,6 +44,7 @@ class RegisterStaveServiceTest {
 
         registerStaveService.registerStave(stave);
 
+        verify(getterAssemblyService).findById(eq(stave.getAssembly().getId()));
         verify(staveRepository).save(eq(stave));
     }
 
@@ -66,5 +69,23 @@ class RegisterStaveServiceTest {
         assertThrows((BusinessException.class), () -> registerStaveService.registerStave(stave));
 
         verify(staveRepository, never()).save(eq(stave));
+    }
+
+    @Test
+    void shouldNotReturnBusinessExceptionWhenValidateListWithThemeDuplicate(){
+        Assembly assembly = mockAssembly();
+        Stave stave = mockStaveDefault();
+        stave.setDescription("testing theme");
+        assembly.setStaveList(Arrays.asList(stave, mockStaveDefault()));
+
+        Assertions.assertDoesNotThrow(() -> registerStaveService.validateThemeDuplicate(assembly.getStaveList()));
+    }
+
+    @Test
+    void shouldReturnBusinessExceptionWhenValidateListWithThemeDuplicate(){
+        Assembly assembly = mockAssembly();
+        assembly.setStaveList(Arrays.asList(mockStaveDefault(), mockStaveDefault()));
+
+        assertThrows((BusinessException.class), () -> registerStaveService.validateThemeDuplicate(assembly.getStaveList()));
     }
 }

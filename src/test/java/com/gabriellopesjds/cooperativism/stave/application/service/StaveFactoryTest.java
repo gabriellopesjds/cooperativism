@@ -1,12 +1,14 @@
 package com.gabriellopesjds.cooperativism.stave.application.service;
 
+import com.gabriellopesjds.api.model.StaveBaseRequestDTO;
+import com.gabriellopesjds.api.model.StaveBaseResponseDTO;
 import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
 import com.gabriellopesjds.api.model.StaveUpdateRequestDTO;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 import com.gabriellopesjds.cooperativism.utils.PageResultFactory;
-import org.junit.jupiter.api.Assertions;
+import com.gabriellopesjds.cooperativism.utils.UtilsTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +35,7 @@ class StaveFactoryTest {
     private StaveFactory staveFactory;
 
     @Test
-    void shouldBuildStaveFromValueStaveRequestDTO(){
+    void shouldBuildStaveFromValueStaveRequestDTO() {
         StaveRequestDTO staveRequestDTO = mockStaveRequestDTO();
 
         Stave stave = staveFactory.fromValue(staveRequestDTO);
@@ -44,7 +46,7 @@ class StaveFactoryTest {
     }
 
     @Test
-    void shouldBuildStaveResponseDTO(){
+    void shouldBuildStaveResponseDTO() {
         Stave stave = mockStaveDefault();
         StaveResponseDTO staveResponseDTO = staveFactory.buildResponse(stave);
 
@@ -58,7 +60,7 @@ class StaveFactoryTest {
     }
 
     @Test
-    void shouldBuildStaveFromValueStaveUpdateRequestDTO(){
+    void shouldBuildStaveFromValueStaveUpdateRequestDTO() {
         StaveUpdateRequestDTO staveRequestDTO = mockStaveUpdateRequestDTO();
 
         Stave stave = staveFactory.fromValue(staveRequestDTO);
@@ -68,7 +70,7 @@ class StaveFactoryTest {
     }
 
     @Test
-    void shouldBuildStavePageableResponseDTO(){
+    void shouldBuildStavePageableResponseDTO() {
         Stave stave = mockStaveDefault();
         final int pageNumber = 0;
         final int pageSize = 1;
@@ -77,7 +79,26 @@ class StaveFactoryTest {
 
         final StavePageableResponseDTO stavePageableResponseDTO = staveFactory.buildResponse(page);
 
-        Assertions.assertEquals(1, stavePageableResponseDTO.getStaves().size());
+        assertEquals(1, stavePageableResponseDTO.getStaves().size());
+    }
+
+    @Test
+    void shouldBuildStaveFromValueStaveBaseRequestDTO() {
+        StaveBaseRequestDTO staveBaseRequestDTO = UtilsTest.mockStaveBaseRequestDTO();
+        Stave stave = staveFactory.fromValue(staveBaseRequestDTO);
+
+        assertEquals(staveBaseRequestDTO.getDescription(), stave.getDescription());
+        assertEquals(staveBaseRequestDTO.getTheme(), stave.getTheme());
+    }
+
+    @Test
+    void shouldBuildStaveBaseResponse(){
+        Stave stave = mockStaveDefault();
+        StaveBaseResponseDTO staveBaseResponseDTO = staveFactory.buildStaveBaseResponse(stave);
+
+        assertEquals(stave.getId(), staveBaseResponseDTO.getId());
+        assertEquals(stave.getTheme(), staveBaseResponseDTO.getTheme());
+        assertEquals(stave.getDescription(), staveBaseResponseDTO.getDescription());
     }
 
 }
