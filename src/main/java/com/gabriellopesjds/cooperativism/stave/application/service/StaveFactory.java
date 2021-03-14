@@ -1,6 +1,8 @@
 package com.gabriellopesjds.cooperativism.stave.application.service;
 
 import com.gabriellopesjds.api.model.AssemblyBaseResponseDTO;
+import com.gabriellopesjds.api.model.StaveBaseRequestDTO;
+import com.gabriellopesjds.api.model.StaveBaseResponseDTO;
 import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
@@ -40,6 +42,13 @@ public class StaveFactory {
         return stave;
     }
 
+    public Stave fromValue(StaveBaseRequestDTO staveBaseRequestDTO){
+        Stave stave = new Stave();
+        stave.setTheme(staveBaseRequestDTO.getTheme());
+        stave.setDescription(staveBaseRequestDTO.getDescription());
+        return stave;
+    }
+
     public StaveResponseDTO buildResponse(Stave stave) {
         AssemblyBaseResponseDTO assemblyDTO = new AssemblyBaseResponseDTO()
             .id(stave.getAssembly().getId())
@@ -62,6 +71,13 @@ public class StaveFactory {
         return new StavePageableResponseDTO()
             .staves(staveResponseDTOList)
             .pageResult(pageResultFactory.createPageFrom(page));
+    }
+
+    public StaveBaseResponseDTO buildStaveBaseResponse(Stave stave){
+        return new StaveBaseResponseDTO()
+            .id(stave.getId())
+            .description(stave.getDescription())
+            .theme(stave.getTheme());
     }
 
 }

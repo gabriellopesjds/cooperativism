@@ -9,38 +9,46 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static com.gabriellopesjds.cooperativism.utils.UtilsTest.ASSEMBLY_ID;
 import static com.gabriellopesjds.cooperativism.utils.UtilsTest.mockAssembly;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GetterAssemblyServiceTest {
+class DeleteAssemblyServiceTest {
 
     @Mock
     private AssemblyRepository assemblyRepository;
 
+    @Mock
+    private FinderAssemblyService finderAssemblyService;
+
     @InjectMocks
-    private GetterAssemblyService getterAssemblyService;
+    private DeleteAssemblyService deleteAssemblyService;
 
     @Test
-    void shouldReturnAssemblyWhenFindById(){
+    void shouldDeleteAssemblyWithSuccess(){
         Assembly assembly = mockAssembly();
-        when(assemblyRepository.findById(ASSEMBLY_ID)).thenReturn(Optional.of(assembly));
 
-        Assembly assemblySaved = getterAssemblyService.findById(ASSEMBLY_ID);
+        when(finderAssemblyService.findById(assembly.getId())).thenReturn(assembly);
 
-        assertNotNull(assemblySaved);
+        deleteAssemblyService.delete(assembly.getId());
+
+        verify(assemblyRepository).delete(eq(assembly));
     }
 
     @Test
     void shouldReturnBusinessExceptionWhenAssemblyNotFound(){
-        when(assemblyRepository.findById(ASSEMBLY_ID)).thenReturn(Optional.empty());
+        Assembly assembly = mockAssembly();
 
-        assertThrows((BusinessException.class), () -> getterAssemblyService.findById(ASSEMBLY_ID));
+        doThrow(BusinessException.class).when(finderAssemblyService).findById(eq(assembly.getId()));
+
+        assertThrows((BusinessException.class), () -> deleteAssemblyService.delete(assembly.getId()));
+
+        verify(assemblyRepository, never()).delete(eq(assembly));
     }
 
 }

@@ -1,7 +1,13 @@
 package com.gabriellopesjds.cooperativism.utils;
 
 import com.gabriellopesjds.api.model.AssemblyBaseResponseDTO;
+import com.gabriellopesjds.api.model.AssemblyPageableResponseDTO;
+import com.gabriellopesjds.api.model.AssemblyRequestDTO;
+import com.gabriellopesjds.api.model.AssemblyResponseDTO;
+import com.gabriellopesjds.api.model.AssemblyUpdateRequestDTO;
 import com.gabriellopesjds.api.model.PageResultDTO;
+import com.gabriellopesjds.api.model.StaveBaseRequestDTO;
+import com.gabriellopesjds.api.model.StaveBaseResponseDTO;
 import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
@@ -21,7 +27,7 @@ public class UtilsTest {
     public static final UUID STAVE_ID = UUID.fromString("c87a83ab-4054-4fa4-8199-f16ffff26af7");
     public static final LocalDateTime CREATION_DATE = LocalDateTime.now(ZoneOffset.UTC);
     public static final LocalDateTime FIXED_TIMESTAMP = LocalDateTime.of(2021, 3, 30, 10, 30);
-    private static final String DESCRIPTION = "DESCRIPTION";
+    public static final String DESCRIPTION = "DESCRIPTION";
     private static final String THEME = "THEME";
     public static final Integer PAGE_SIZE = 10;
     public static final Integer PAGE_NUMBER = 0;
@@ -85,5 +91,45 @@ public class UtilsTest {
         stavePageableResponseDTO.setStaves(Collections.singletonList(mockStaveResponseDTO(mockStaveDefault())));
         stavePageableResponseDTO.setPageResult(new PageResultDTO());
         return stavePageableResponseDTO;
+    }
+
+    public static StaveBaseRequestDTO mockStaveBaseRequestDTO(){
+        return new StaveBaseRequestDTO()
+            .description(DESCRIPTION)
+            .theme(THEME);
+    }
+
+    public static AssemblyRequestDTO mockAssemblyRequestDTO() {
+        return new AssemblyRequestDTO()
+            .description(DESCRIPTION)
+            .date(FIXED_TIMESTAMP)
+            .staves(Arrays.asList(mockStaveBaseRequestDTO()));
+    }
+
+    public static StaveBaseResponseDTO mockStaveBaseResponseDTO(){
+        return new StaveBaseResponseDTO()
+            .description(DESCRIPTION)
+            .theme(THEME);
+    }
+
+    public static AssemblyResponseDTO mockAssemblyResponseDTO(){
+        return new AssemblyResponseDTO()
+            .description(DESCRIPTION)
+            .id(ASSEMBLY_ID)
+            .date(FIXED_TIMESTAMP)
+            .creationDate(CREATION_DATE)
+            .staves(Arrays.asList(mockStaveBaseResponseDTO()));
+    }
+
+    public static AssemblyPageableResponseDTO mockAssemblyPageableResponseDTO(){
+        return new AssemblyPageableResponseDTO()
+            .assemblys(Collections.singletonList(mockAssemblyResponseDTO()))
+            .pageResult(new PageResultDTO());
+    }
+
+    public static AssemblyUpdateRequestDTO mockAssemblyUpdateRequestDTO(){
+        return new AssemblyUpdateRequestDTO()
+            .description(DESCRIPTION)
+            .date(FIXED_TIMESTAMP);
     }
 }

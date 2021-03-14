@@ -125,8 +125,8 @@ paths:
     
   /v1/assembly:
     post:
-      summary: "Stave registration."
-      description: "Register an stave."
+      summary: "Assembly registration."
+      description: "Register an assembly."
       tags:
         - Assembly
       operationId: registerAssembly
@@ -143,6 +143,92 @@ paths:
               schema:
                   $ref: '#/components/schemas/AssemblyResponseWrapper'
         '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError' 
+    
+    get:
+      summary: "List of assembly."
+      description: "Finds all assembly."
+      tags:
+        - Assembly
+      operationId: finderAllAssembly
+      parameters:
+          - $ref: '#/components/parameters/pageSize'
+          - $ref: '#/components/parameters/pageNumber'
+          - $ref: '#/components/parameters/sortDirection'
+      responses:
+        '200':
+          description: "List of assemblys."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssemblyFinderResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'      
+          
+  /v1/assembly/{id}:
+    put:
+      summary: "Assembly update."
+      description: "Receives the assembly update request."
+      tags:
+        - Assembly
+      operationId: updateAssembly
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssemblyUpdateRequest'
+      responses:
+        '202':
+          description: "Assembly update request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssemblyResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+          
+    delete:
+      summary: "Assembly delete."
+      description: "Receives the assembly delete request."
+      tags:
+        - Assembly
+      operationId: deleteAssembly
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      responses:
+        '204':
+          description: "Assembly delete request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssemblyResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+    
+    get:
+      summary: "Assembly find."
+      description: "Find assembly by id"
+      tags:
+        - Assembly
+      operationId: findAssembly
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      responses:
+        '200':
+          description: "Assembly find request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssemblyResponseWrapper'
+        '404':
           $ref: '#/components/schemas/BadRequest'
         '500':
           $ref: '#/components/schemas/InternalServerError'        
@@ -262,22 +348,9 @@ components:
       description: 'Internal server error.'
       $ref: '#/components/schemas/Errors'
       
-    TypePersonEnum:
-      description: |
-          The person type:
-            * `NATURAL_PERSON` - Type of natural person
-            * `LEGAL_PERSON` - Type of legal person
-      type: string
-      enum:
-          - NATURAL_PERSON
-          - LEGAL_PERSON
-      example: NATURAL_PERSON    
-
     AssociatedBase:
       type: object
       properties:
-        typePerson:
-          $ref: '#/components/schemas/TypePersonEnum'
         name:
           description: "Associate name"
           type: string
@@ -362,11 +435,28 @@ components:
                 allOf:
                   - $ref: '#/components/schemas/StaveBaseResponse'
       
+    AssemblyPageableResponse:
+      description: "A response of an Assembly register request."
+      type: "object"
+      properties:
+        assemblys:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssemblyResponse'
+        pageResult:
+          $ref: '#/components/schemas/PageResult'
+    
     AssemblyResponseWrapper:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/AssemblyResponse'
+    
+    AssemblyFinderResponseWrapper:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AssemblyPageableResponse'      
     
     AssemblyRequest:
       description: 'An assembly register request.'
@@ -379,7 +469,12 @@ components:
               items:
                 allOf:
                   - $ref: '#/components/schemas/StaveBaseRequest'
-
+                  
+    AssemblyUpdateRequest:
+      description: 'An Assembly register request.'
+      allOf:
+        - $ref: '#/components/schemas/AssemblyBaseRequest'        
+  
     StaveBaseResponse:
       type: object
       description: 'Stave basic data'
