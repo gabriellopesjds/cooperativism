@@ -5,3 +5,6 @@ databaseChangeLog:
   - include:
       file: changelog-create-table-stave.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog-create-table-associated.yaml
+      relativeToChangelogFile: true

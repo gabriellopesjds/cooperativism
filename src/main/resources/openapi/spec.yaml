@@ -2,8 +2,8 @@ openapi: 3.0.1
 
 info:
   title: Cooperativism API
-  description: Este é um servidor de teste. Para obter mais informações sobre o desenvolvimento
-    acessar [http://swagger.io](http://swagger.io).
+  description: Para obter mais informações sobre o desenvolvimento
+    acessar o [github](https://github.com/gabriellopesjds/cooperativism).
   contact:
     email: gabriel.lopesjds@gmail.com
   version: 1.0.0
@@ -94,10 +94,6 @@ paths:
       responses:
         '204':
           description: "Stave delete request was successful."
-          content:
-            application/json:
-              schema:
-                  $ref: '#/components/schemas/StaveResponseWrapper'
         '400':
           $ref: '#/components/schemas/BadRequest'
         '500':
@@ -204,10 +200,6 @@ paths:
       responses:
         '204':
           description: "Assembly delete request was successful."
-          content:
-            application/json:
-              schema:
-                  $ref: '#/components/schemas/AssemblyResponseWrapper'
         '400':
           $ref: '#/components/schemas/BadRequest'
         '500':
@@ -232,6 +224,150 @@ paths:
           $ref: '#/components/schemas/BadRequest'
         '500':
           $ref: '#/components/schemas/InternalServerError'        
+  
+  /v1/associated:
+    post:
+      summary: "Associated registration."
+      description: "Register an Associated."
+      tags:
+        - Associated
+      operationId: registerAssociated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssociatedRequest'
+      responses:
+        '201':
+          description: "Registration request created"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssociatedResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError' 
+    
+    get:
+      summary: "List of Associated."
+      description: "Finds all Associated."
+      tags:
+        - Associated
+      operationId: finderAllAssociated
+      parameters:
+          - $ref: '#/components/parameters/pageSize'
+          - $ref: '#/components/parameters/pageNumber'
+          - $ref: '#/components/parameters/sortDirection'
+      responses:
+        '200':
+          description: "List of Associateds."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssociatedFinderResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'      
+          
+  /v1/associated/{id}:
+    put:
+      summary: "Associated update."
+      description: "Receives the Associated update request."
+      tags:
+        - Associated
+      operationId: updateAssociated
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssociatedUpdateRequest'
+      responses:
+        '202':
+          description: "Associated update request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssociatedResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+          
+    delete:
+      summary: "Associated delete."
+      description: "Receives the Associated delete request."
+      tags:
+        - Associated
+      operationId: deleteAssociated
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      responses:
+        '204':
+          description: "Associated delete request was successful."
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+    
+    get:
+      summary: "Associated find."
+      description: "Find Associated by id"
+      tags:
+        - Associated
+      operationId: findAssociated
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      responses:
+        '200':
+          description: "Associated find request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssociatedResponseWrapper'
+        '404':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'                
+  
+  /v1/associated/cpf/{cpf}:
+    get:
+      summary: "Associated find."
+      description: "Find Associated by CPF"
+      tags:
+        - Associated
+      operationId: findAssociatedByCpf
+      parameters:
+        - $ref: '#/components/parameters/cpfInPath'
+      responses:
+        '200':
+          description: "Associated find request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/AssociatedResponseWrapper'
+        '404':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'  
+    
+    delete:
+      summary: "Associated delete."
+      description: "Receives the Associated delete by CPF request."
+      tags:
+        - Associated
+      operationId: deleteAssociatedByCpf
+      parameters:
+        - $ref: '#/components/parameters/cpfInPath'
+      responses:
+        '204':
+          description: "Associated delete request was successful."
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'      
+  
 
 components:
   schemas:
@@ -348,35 +484,88 @@ components:
       description: 'Internal server error.'
       $ref: '#/components/schemas/Errors'
       
-    AssociatedBase:
+    AssociatedBaseResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Associated identifier"
+          example: "1309dadb-44dd-4792-a06e-1ab9f14a1b27"
+        name:
+          description: "Associate name"
+          type: string
+          example: "Gabriel Lopes"
+        cpf:
+          description: 'The cpf of the associated.'
+          type: string
+          example: '65732190074'
+      required:
+        - 'id'
+        - 'name'
+        - 'cpf'
+    
+    AssociatedBaseUpdateRequest:
       type: object
       properties:
         name:
           description: "Associate name"
           type: string
           example: "Gabriel Lopes"
-        taxId:
-          description: 'The tax id (CPF/CNPJ) of the associated.'
-          type: string
-          pattern: (^\d{3}\.\d{3}\.\d{3}\-\d{2}$)|(^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$)|(^\d{11})|(^\d{14})
-          example: '65732190074'
+      required:
+        - 'name'
     
+    AssociatedBaseRequest:
+      type: object
+      properties:
+        name:
+          description: "Associate name"
+          type: string
+          example: "Gabriel Lopes"
+        cpf:
+          description: 'The cpf of the associated.'
+          type: string
+          example: '65732190074'
+      required:
+        - 'name'
+        - 'cpf'
+        
     AssociatedResponse:
       allOf:
-        - $ref: '#/components/schemas/AssociatedBase'
-        - type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              description: "Associated identifier"
-              example: "1309dadb-44dd-4792-a06e-1ab9f14a1b27"
+        - $ref: '#/components/schemas/AssociatedBaseResponse'
         
+    AssociatedPageableResponse:
+      description: "A response of an Associated register request."
+      type: "object"
+      properties:
+        associateds:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssociatedResponse'
+        pageResult:
+          $ref: '#/components/schemas/PageResult'
+    
     AssociatedResponseWrapper:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/AssociatedResponse'      
+          $ref: '#/components/schemas/AssociatedResponse'
+    
+    AssociatedFinderResponseWrapper:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AssociatedPageableResponse'      
+    
+    AssociatedRequest:
+      description: 'An Associated register request.'
+      allOf:
+        - $ref: '#/components/schemas/AssociatedBaseRequest'
+        
+    AssociatedUpdateRequest:
+      description: 'An Associated register request.'
+      allOf:
+        - $ref: '#/components/schemas/AssociatedBaseUpdateRequest'        
           
     AssemblyBaseResponse:
       type: object
@@ -566,6 +755,15 @@ components:
         - $ref: '#/components/schemas/StaveBaseRequest'        
   
   parameters:
+    cpfInPath:
+      description: 'The required cpf value.'
+      name: 'cpf'
+      in: path
+      required: true
+      schema:
+        type: string
+        example: "22982097079"
+    
     idInPath:
       description: 'The required identifier (ID) value.'
       name: 'id'
