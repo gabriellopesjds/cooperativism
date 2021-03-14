@@ -1,7 +1,5 @@
 package com.gabriellopesjds.cooperativism.stave.domain.service;
 
-import com.gabriellopesjds.cooperativism.assembly.domain.model.Assembly;
-import com.gabriellopesjds.cooperativism.assembly.domain.service.GetterAssemblyService;
 import com.gabriellopesjds.cooperativism.exception.BusinessException;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 import com.gabriellopesjds.cooperativism.stave.repository.StaveRepository;
@@ -10,28 +8,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class RegisterStaveService {
+public class UpdateStaveService {
 
     private final StaveRepository staveRepository;
-    private final GetterAssemblyService getterAssemblyService;
+    private final FinderStaveService finderStaveService;
 
     @Transactional
-    public Stave registerStave(Stave stave) {
-        Assembly assembly = getterAssemblyService.findById(stave.getAssembly().getId());
-
-        validateThemeDuplicate(stave, assembly);
-
-        stave.setAssembly(assembly);
-        return staveRepository.save(stave);
+    public Stave updateStave(UUID id, Stave stave) {
+        Stave staveSaved = finderStaveService.findById(id);
+        validateThemeDuplicate(stave, staveSaved);
+        staveSaved.setTheme(stave.getTheme());
+        staveSaved.setDescription(stave.getDescription());
+        return staveRepository.save(staveSaved);
     }
 
-    private static void validateThemeDuplicate(Stave stave, Assembly assembly) {
-        assembly.getStaveList().stream()
-            .filter( staveSaved -> staveSaved.getTheme().equals(stave.getTheme()))
+    private static void validateThemeDuplicate(Stave stave, Stave staveSaved) {
+        staveSaved.getAssembly().getStaveList().stream()
+            .filter(staveFind -> stave.getTheme().equals(staveFind.getTheme()) && staveFind.getId() != staveSaved.getId())
             .findFirst()
-            .ifPresent(staveSaved -> {
+            .ifPresent(s -> {
                 throw new BusinessException("COOPERATIVISM-003", staveSaved.getTheme(), staveSaved.getAssembly().getId().toString());
             });
     }

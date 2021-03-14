@@ -35,7 +35,94 @@ paths:
           $ref: '#/components/schemas/BadRequest'
         '500':
           $ref: '#/components/schemas/InternalServerError'
+    
+    get:
+      summary: "List of stave."
+      description: "Finds all staves"
+      tags:
+        - Stave
+      operationId: finderAllStave
+      parameters:
+          - $ref: '#/components/parameters/pageSize'
+          - $ref: '#/components/parameters/pageNumber'
+          - $ref: '#/components/parameters/sortDirection'
+          - $ref: '#/components/parameters/staveSortBy'
+      responses:
+        '200':
+          description: "List of staves"
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/StaveFinderResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'      
   
+  /v1/stave/{id}:
+    put:
+      summary: "Stave update."
+      description: "Receives the stave update request."
+      tags:
+        - Stave
+      operationId: updateStave
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaveUpdateRequest'
+      responses:
+        '202':
+          description: "Stave update request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/StaveResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+          
+    delete:
+      summary: "Stave delete."
+      description: "Receives the stave delete request."
+      tags:
+        - Stave
+      operationId: deleteStave
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      responses:
+        '204':
+          description: "Stave delete request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/StaveResponseWrapper'
+        '400':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+    
+    get:
+      summary: "Stave find."
+      description: "Find stave by id"
+      tags:
+        - Stave
+      operationId: findStave
+      parameters:
+        - $ref: '#/components/parameters/idInPath'
+      responses:
+        '200':
+          description: "Stave find request was successful."
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/StaveResponseWrapper'
+        '404':
+          $ref: '#/components/schemas/BadRequest'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'      
+    
   /v1/assembly:
     post:
       summary: "Stave registration."
@@ -62,6 +149,79 @@ paths:
 
 components:
   schemas:
+    
+    PageResult:
+      type: object
+      properties:
+        pageable:
+          $ref: '#/components/schemas/pageable'
+        totalPages:
+          type: integer
+          example: 1
+        pageSize:
+          type: integer
+          example: 1
+        pageNumber:
+          type: integer
+          example: 1
+        numberOfElements:
+          type: integer
+          example: 1
+        totalElements:
+          type: integer
+          format: int64
+          example: 1
+        last:
+          type: boolean
+          example: true
+        first:
+          type: boolean
+          example: true
+        hasNext:
+          type: boolean
+          example: true
+        hasPrevious:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: true
+        sort:
+          $ref: '#/components/schemas/sort'
+          
+    pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          example: o
+        pageSize:
+          type: integer
+          example: 5
+        offset:
+          type: integer
+          example: 0
+          format: int64
+        unpaged:
+          type: boolean
+          example: false
+        paged:
+          type: boolean
+          example: true
+
+    sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+          example: true
+        unsorted:
+          type: boolean
+          example: false
+        empty:
+          type: boolean
+          example: false      
+  
     Error:
       type: object
       description: 'An error when processing a request.'
@@ -267,12 +427,29 @@ components:
           properties:
             assembly:
               $ref: '#/components/schemas/AssemblyBaseResponse'
+    
+    StavePageableResponse:
+      description: "A response of an Stave register request."
+      type: "object"
+      properties:
+        staves:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaveResponse'
+        pageResult:
+          $ref: '#/components/schemas/PageResult'
               
     StaveResponseWrapper:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/StaveResponse'
+          
+    StaveFinderResponseWrapper:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/StavePageableResponse'      
     
     StaveRequest:
       description: 'An Stave register request.'
@@ -287,3 +464,63 @@ components:
               example: "73a45ab4-cda9-4ae2-aaaa-1344632c88fe"
           required:
             - 'idAssembly'
+    
+    StaveUpdateRequest:
+      description: 'An Stave register request.'
+      allOf:
+        - $ref: '#/components/schemas/StaveBaseRequest'        
+  
+  parameters:
+    idInPath:
+      description: 'The required identifier (ID) value.'
+      name: 'id'
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: 66828294-9eeb-4391-aea6-e59cd4415862
+        
+    staveSortBy:
+      description: 'Sort field of data for query of notification email'
+      name: sortBy
+      in: query
+      schema:
+        type: string
+        enum:
+          - THEME
+          - DESCRIPTION
+          - LAST_MODIFIED
+        example: THEME
+        default: THEME
+        
+    sortDirection:
+      description: 'Sort direction of data for query'
+      name: sortDirection
+      in: query
+      schema:
+        type: string
+        enum:
+          - ASC
+          - DESC
+        example: ASC
+        default: ASC
+    
+    pageSize:
+      description: 'Size of the pages'
+      name: 'pageSize'
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+    
+    pageNumber:
+      description: 'Number of the current page '
+      name: 'pageNumber'
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+        
