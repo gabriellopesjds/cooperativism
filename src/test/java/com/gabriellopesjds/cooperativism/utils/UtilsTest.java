@@ -5,6 +5,10 @@ import com.gabriellopesjds.api.model.AssemblyPageableResponseDTO;
 import com.gabriellopesjds.api.model.AssemblyRequestDTO;
 import com.gabriellopesjds.api.model.AssemblyResponseDTO;
 import com.gabriellopesjds.api.model.AssemblyUpdateRequestDTO;
+import com.gabriellopesjds.api.model.AssociatedPageableResponseDTO;
+import com.gabriellopesjds.api.model.AssociatedRequestDTO;
+import com.gabriellopesjds.api.model.AssociatedResponseDTO;
+import com.gabriellopesjds.api.model.AssociatedUpdateRequestDTO;
 import com.gabriellopesjds.api.model.PageResultDTO;
 import com.gabriellopesjds.api.model.StaveBaseRequestDTO;
 import com.gabriellopesjds.api.model.StaveBaseResponseDTO;
@@ -13,6 +17,7 @@ import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
 import com.gabriellopesjds.api.model.StaveUpdateRequestDTO;
 import com.gabriellopesjds.cooperativism.assembly.domain.model.Assembly;
+import com.gabriellopesjds.cooperativism.associated.domain.model.Associated;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 
 import java.time.LocalDateTime;
@@ -25,6 +30,7 @@ public class UtilsTest {
 
     public static final UUID ASSEMBLY_ID = UUID.fromString("0f5ccfe8-5588-45c0-8804-517685d71308");
     public static final UUID STAVE_ID = UUID.fromString("c87a83ab-4054-4fa4-8199-f16ffff26af7");
+    public static final UUID ASSOCIATED_ID = UUID.fromString("f87a83ab-4054-4fa4-8199-f16ffff26af2");
     public static final LocalDateTime CREATION_DATE = LocalDateTime.now(ZoneOffset.UTC);
     public static final LocalDateTime FIXED_TIMESTAMP = LocalDateTime.of(2021, 3, 30, 10, 30);
     public static final String DESCRIPTION = "DESCRIPTION";
@@ -33,6 +39,8 @@ public class UtilsTest {
     public static final Integer PAGE_NUMBER = 0;
     public static final String SORT_DIRECTION = "DESC";
     public static final String SORT_BY = "DESCRIPTION";
+    public static final String NAME = "ASSOCIATED";
+    public static final String CPF = "65732190074";
 
 
     public static Assembly mockAssembly() {
@@ -131,5 +139,37 @@ public class UtilsTest {
         return new AssemblyUpdateRequestDTO()
             .description(DESCRIPTION)
             .date(FIXED_TIMESTAMP);
+    }
+
+    public static AssociatedRequestDTO mockAssociatedRequestDTO(){
+        return new AssociatedRequestDTO()
+            .name(NAME)
+            .cpf(CPF);
+    }
+
+    public static Associated mockAssociated(){
+        Associated associated = new Associated();
+        associated.setId(ASSOCIATED_ID);
+        associated.setName(NAME);
+        associated.setCpf(CPF);
+        return associated;
+    }
+
+    public static AssociatedResponseDTO mockAssociatedResponseDTO(){
+        return new AssociatedResponseDTO()
+            .id(ASSOCIATED_ID)
+            .name(NAME)
+            .cpf(CPF);
+    }
+
+    public static AssociatedPageableResponseDTO mockAssociatedPageableResponseDTO(){
+        return new AssociatedPageableResponseDTO()
+            .associateds(Collections.singletonList(mockAssociatedResponseDTO()))
+            .pageResult(new PageResultDTO());
+    }
+
+    public static AssociatedUpdateRequestDTO mockAssociatedUpdateRequestDTO(){
+        return new AssociatedUpdateRequestDTO()
+            .name(NAME);
     }
 }
