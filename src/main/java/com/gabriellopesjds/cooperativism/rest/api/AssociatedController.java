@@ -81,7 +81,7 @@ public class AssociatedController {
         return ResponseEntity.ok(new AssociatedResponseWrapperDTO().data(AssociatedResponseDTO));
     }
 
-    @GetMapping("/cpf/{cpf}")
+    @GetMapping("cpf/{cpf}")
     public ResponseEntity<AssociatedResponseWrapperDTO> findAssociatedByCpf(@PathVariable String cpf) {
         AssociatedResponseDTO AssociatedResponseDTO = associatedApplicationService.findAssociatedByCpf(cpf);
 

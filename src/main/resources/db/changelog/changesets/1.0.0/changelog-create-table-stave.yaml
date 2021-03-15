@@ -32,3 +32,9 @@ databaseChangeLog:
             constraintName: fk_stave_id_to_assembly_id
             referencedColumnNames: id
             referencedTableName: assembly
+
+        - addUniqueConstraint:
+            columnNames: theme, id_assembly
+            constraintName: UK_STAVE
+            disabled: false
+            tableName: stave

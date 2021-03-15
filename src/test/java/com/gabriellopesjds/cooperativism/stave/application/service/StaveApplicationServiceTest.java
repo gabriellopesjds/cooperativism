@@ -8,7 +8,9 @@ import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 import com.gabriellopesjds.cooperativism.stave.domain.service.DeleteStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.FinderStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.RegisterStaveService;
+import com.gabriellopesjds.cooperativism.stave.domain.service.ResultStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.UpdateStaveService;
+import com.gabriellopesjds.cooperativism.votingsession.application.service.VotingSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,6 +51,12 @@ class StaveApplicationServiceTest {
 
     @Mock
     private DeleteStaveService deleteStaveService;
+
+    @Mock
+    private ResultStaveService resultStaveService;
+
+    @Mock
+    private VotingSessionFactory votingSessionFactory;
 
     @InjectMocks
     private StaveApplicationService staveApplicationService;
@@ -118,6 +126,19 @@ class StaveApplicationServiceTest {
         verify(staveFactory).fromValue(eq(staveRequestDTO));
         verify(updateStaveService).updateStave(eq(stave.getId()), eq(stave));
         verify(staveFactory).buildResponse(eq(stave));
+    }
+
+    @Test
+    void shouldContabilizeResultStave(){
+        UUID id = UUID.randomUUID();
+        Stave stave = mockStaveDefault();
+
+        when(resultStaveService.contabilizeResultStave(id)).thenReturn(stave);
+
+        staveApplicationService.contabilizeResultStave(id);
+
+        verify(resultStaveService).contabilizeResultStave(eq(id));
+        verify(votingSessionFactory).buildResponse(eq(stave));
     }
 
 }

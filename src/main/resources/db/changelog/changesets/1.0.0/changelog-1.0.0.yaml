@@ -8,3 +8,9 @@ databaseChangeLog:
   - include:
       file: changelog-create-table-associated.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changelog-create-table-voting-session.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changelog-create-table-vote.yaml
+      relativeToChangelogFile: true

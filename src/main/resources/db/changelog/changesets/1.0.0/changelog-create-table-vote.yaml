@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-vote
+      author: Gabriel Lopes
+      changes:
+        - createTable:
+            tableName: vote
+            columns:
+              - column:
+                  name: id
+                  type: binary(16)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vote_type
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_voting_session
+                  type: binary(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_associated
+                  type: binary(16)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: id_voting_session
+            baseTableName: vote
+            constraintName: fk_vote_id_to_voting_session_id
+            referencedColumnNames: id
+            referencedTableName: voting_session
+
+        - addForeignKeyConstraint:
+            baseColumnNames: id_associated
+            baseTableName: vote
+            constraintName: fk_vote_id_to_associated_id
+            referencedColumnNames: id
+            referencedTableName: associated
+
+        - addUniqueConstraint:
+            columnNames: id_voting_session, id_associated
+            constraintName: UK_VOTE
+            disabled: false
+            tableName: vote

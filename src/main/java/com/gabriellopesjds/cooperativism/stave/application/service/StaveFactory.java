@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class StaveFactory {
 
     private final PageResultFactory pageResultFactory;
+//    private final AssemblyFactory assemblyFactory;
 
     public Stave fromValue(StaveRequestDTO staveRequestDTO) {
         Assembly assembly = new Assembly();
@@ -50,7 +51,7 @@ public class StaveFactory {
     }
 
     public StaveResponseDTO buildResponse(Stave stave) {
-        AssemblyBaseResponseDTO assemblyDTO = new AssemblyBaseResponseDTO()
+        AssemblyBaseResponseDTO assemblyBaseResponseDTO = new AssemblyBaseResponseDTO()
             .id(stave.getAssembly().getId())
             .description(stave.getAssembly().getDescription())
             .date(stave.getAssembly().getDate())
@@ -60,7 +61,7 @@ public class StaveFactory {
             .id(stave.getId())
             .description(stave.getDescription())
             .theme(stave.getTheme())
-            .assembly(assemblyDTO);
+            .assembly(assemblyBaseResponseDTO);
     }
 
     public StavePageableResponseDTO buildResponse(Page<Stave> page) {

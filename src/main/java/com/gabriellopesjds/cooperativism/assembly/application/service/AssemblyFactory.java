@@ -1,5 +1,6 @@
 package com.gabriellopesjds.cooperativism.assembly.application.service;
 
+import com.gabriellopesjds.api.model.AssemblyBaseResponseDTO;
 import com.gabriellopesjds.api.model.AssemblyPageableResponseDTO;
 import com.gabriellopesjds.api.model.AssemblyRequestDTO;
 import com.gabriellopesjds.api.model.AssemblyResponseDTO;
@@ -73,6 +74,14 @@ public class AssemblyFactory {
         return new AssemblyPageableResponseDTO()
             .assemblys(assemblyResponseDTOList)
             .pageResult(pageResultFactory.createPageFrom(page));
+    }
+
+    public AssemblyBaseResponseDTO buildAssemblyBaseResponseDTO(Assembly assembly) {
+        return new AssemblyBaseResponseDTO()
+            .id(assembly.getId())
+            .description(assembly.getDescription())
+            .date(assembly.getDate())
+            .creationDate(assembly.getCreationDate());
     }
 
 }
