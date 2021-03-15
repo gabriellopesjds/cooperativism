@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-voting-session
+      author: Gabriel Lopes
+      changes:
+        - createTable:
+            tableName: voting_session
+            columns:
+              - column:
+                  name: id
+                  type: binary(16)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: duration
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: DATETIME(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: DATETIME(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_stave
+                  type: binary(16)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: id_stave
+            baseTableName: voting_session
+            constraintName: fk_voting_session_id_to_stave_id
+            referencedColumnNames: id
+            referencedTableName: stave

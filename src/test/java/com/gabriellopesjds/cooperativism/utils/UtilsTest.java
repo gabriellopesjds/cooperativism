@@ -16,21 +16,35 @@ import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
 import com.gabriellopesjds.api.model.StaveUpdateRequestDTO;
+import com.gabriellopesjds.api.model.VoteRequestDTO;
+import com.gabriellopesjds.api.model.VoteResponseDTO;
+import com.gabriellopesjds.api.model.VoteTypeDTO;
+import com.gabriellopesjds.api.model.VotingSessionRequestDTO;
+import com.gabriellopesjds.api.model.VotingSessionResponseDTO;
 import com.gabriellopesjds.cooperativism.assembly.domain.model.Assembly;
 import com.gabriellopesjds.cooperativism.associated.domain.model.Associated;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
+import com.gabriellopesjds.cooperativism.vote.domain.model.Vote;
+import com.gabriellopesjds.cooperativism.vote.domain.model.enumerated.VoteTypeEnum;
+import com.gabriellopesjds.cooperativism.votingsession.domain.model.VotingSession;
+import com.gabriellopesjds.cooperativism.votingsession.domain.model.enumerated.VotingSessionStateEnum;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class UtilsTest {
 
     public static final UUID ASSEMBLY_ID = UUID.fromString("0f5ccfe8-5588-45c0-8804-517685d71308");
     public static final UUID STAVE_ID = UUID.fromString("c87a83ab-4054-4fa4-8199-f16ffff26af7");
     public static final UUID ASSOCIATED_ID = UUID.fromString("f87a83ab-4054-4fa4-8199-f16ffff26af2");
+    public static final UUID VOTING_SESSION_ID = UUID.fromString("487a83ab-4034-4fa4-8199-f16ffff26af2");
+    public static final UUID VOTE_ID = UUID.fromString("187a83ab-4034-4fa4-8199-f16ffff26af2");
     public static final LocalDateTime CREATION_DATE = LocalDateTime.now(ZoneOffset.UTC);
     public static final LocalDateTime FIXED_TIMESTAMP = LocalDateTime.of(2021, 3, 30, 10, 30);
     public static final String DESCRIPTION = "DESCRIPTION";
@@ -41,6 +55,9 @@ public class UtilsTest {
     public static final String SORT_BY = "DESCRIPTION";
     public static final String NAME = "ASSOCIATED";
     public static final String CPF = "65732190074";
+    private static final Long DURATION = 10L;
+    public static final LocalDateTime START_DATE = LocalDateTime.of(2021, 3, 30, 10, 30);
+    public static final LocalDateTime END_DATE = LocalDateTime.of(2021, 3, 30, 10, 40);
 
 
     public static Assembly mockAssembly() {
@@ -171,5 +188,83 @@ public class UtilsTest {
     public static AssociatedUpdateRequestDTO mockAssociatedUpdateRequestDTO(){
         return new AssociatedUpdateRequestDTO()
             .name(NAME);
+    }
+
+    public static VotingSessionRequestDTO mockVotingSessionRequestDTO(){
+        return new VotingSessionRequestDTO()
+            .durationInMinutes(DURATION);
+    }
+
+    public static VotingSession mockVotingSession(){
+        VotingSession votingSession = new VotingSession();
+        votingSession.setDuration(DURATION);
+        votingSession.setStave(mockStaveDefault());
+        votingSession.setStartDate(FIXED_TIMESTAMP);
+        votingSession.setEndDate(FIXED_TIMESTAMP);
+        return votingSession;
+    }
+
+    public static VotingSession mockVotingSessionResult(VotingSession votingSession){
+        votingSession.setTotalVotes(100L);
+        votingSession.setTotalPositiveVotes(70L);
+        votingSession.setTotalNegativeVotes(30L);
+        votingSession.setStateEnum(votingSession.getEndDate().isBefore(LocalDateTime.now()) ?
+            VotingSessionStateEnum.COMPLETED : VotingSessionStateEnum.OPEN);
+        return votingSession;
+    }
+
+    public static VotingSessionResponseDTO mockVotingSessionResponseDTO(){
+        return new VotingSessionResponseDTO()
+            .id(VOTING_SESSION_ID)
+            .startDate(START_DATE)
+            .endDate(END_DATE)
+            .durationInMinutes(DURATION)
+            .stave(mockStaveResponseDTO(mockStaveDefault()));
+    }
+
+    public static VoteRequestDTO mockVoteRequestDTO(){
+        return new VoteRequestDTO()
+            .voteType(VoteTypeDTO.YES)
+            .idAssociated(ASSOCIATED_ID);
+    }
+
+    public static Vote mockVote(){
+        return mockVote(mockAssociated(), mockVotingSession(), VoteTypeEnum.YES);
+    }
+
+    public static Vote mockVote(Associated associated, VotingSession votingSession, VoteTypeEnum voteTypeEnum){
+        Vote vote = new Vote();
+        vote.setId(VOTE_ID);
+        vote.setAssociated(associated);
+        vote.setVotingSession(votingSession);
+        vote.setVoteType(voteTypeEnum);
+        return vote;
+    }
+
+    public static VoteResponseDTO mockVoteResponseDTO(){
+        return new VoteResponseDTO()
+            .id(VOTE_ID)
+            .associated(mockAssociatedResponseDTO())
+            .vote(VoteTypeDTO.YES);
+    }
+
+    public static List<Vote> generatedVotes(VotingSession votingSession, int amountPositive, int amountNegative) {
+        List<Vote> list = new ArrayList<>();
+        List<Vote> listPositive = Arrays.stream(new int[amountPositive])
+            .mapToObj(operand -> generatedVote(votingSession, VoteTypeEnum.YES))
+            .collect(Collectors.toList());
+
+        List<Vote> listNegative = Arrays.stream(new int[amountNegative])
+            .mapToObj(operand -> generatedVote(votingSession, VoteTypeEnum.NO))
+            .collect(Collectors.toList());
+        list.addAll(listPositive);
+        list.addAll(listNegative);
+        return list;
+    }
+
+    private static Vote generatedVote(VotingSession votingSession, VoteTypeEnum typeEnum) {
+        Associated associated = mockAssociated();
+        associated.setId(UUID.randomUUID());
+        return mockVote(associated, votingSession, typeEnum);
     }
 }

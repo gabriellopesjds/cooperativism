@@ -4,11 +4,14 @@ import com.gabriellopesjds.api.model.StavePageableResponseDTO;
 import com.gabriellopesjds.api.model.StaveRequestDTO;
 import com.gabriellopesjds.api.model.StaveResponseDTO;
 import com.gabriellopesjds.api.model.StaveUpdateRequestDTO;
+import com.gabriellopesjds.api.model.VotingSessionResultResponseDTO;
 import com.gabriellopesjds.cooperativism.stave.domain.model.Stave;
 import com.gabriellopesjds.cooperativism.stave.domain.service.DeleteStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.FinderStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.RegisterStaveService;
+import com.gabriellopesjds.cooperativism.stave.domain.service.ResultStaveService;
 import com.gabriellopesjds.cooperativism.stave.domain.service.UpdateStaveService;
+import com.gabriellopesjds.cooperativism.votingsession.application.service.VotingSessionFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +27,9 @@ public class StaveApplicationService {
     private final UpdateStaveService updateStaveService;
     private final FinderStaveService finderStaveService;
     private final DeleteStaveService deleteStaveService;
+    private final ResultStaveService resultStaveService;
     private final StaveFactory staveFactory;
+    private final VotingSessionFactory votingSessionFactory;
 
     public StaveResponseDTO registerStave(StaveRequestDTO staveRequestDTO) {
         Stave stave = registerStaveService.registerStave(staveFactory.fromValue(staveRequestDTO));
@@ -51,4 +56,9 @@ public class StaveApplicationService {
         Stave stave = updateStaveService.updateStave(id, staveFactory.fromValue(staveUpdateRequestDTO));
         return staveFactory.buildResponse(stave);
     }
+
+    public VotingSessionResultResponseDTO contabilizeResultStave(UUID id) {
+        return votingSessionFactory.buildResponse(resultStaveService.contabilizeResultStave(id));
+    }
+
 }

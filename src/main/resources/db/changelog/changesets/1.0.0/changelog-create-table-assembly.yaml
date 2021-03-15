@@ -28,6 +28,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
+        - addUniqueConstraint:
+            columnNames: description, date
+            constraintName: UK_ASSEMBLY
+            disabled: false
+            tableName: assembly
 
         - insert:
             tableName: assembly
