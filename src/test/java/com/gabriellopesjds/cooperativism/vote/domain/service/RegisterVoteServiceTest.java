@@ -8,6 +8,7 @@ import com.gabriellopesjds.cooperativism.stave.domain.service.FinderStaveService
 import com.gabriellopesjds.cooperativism.stave.domain.service.RegisterStaveService;
 import com.gabriellopesjds.cooperativism.vote.domain.model.Vote;
 import com.gabriellopesjds.cooperativism.vote.repository.VoteRepository;
+import com.gabriellopesjds.cooperativism.vote.response.VoteStatusDTO;
 import com.gabriellopesjds.cooperativism.votingsession.domain.model.VotingSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,9 @@ class RegisterVoteServiceTest {
     @Mock
     private FinderAssociatedService finderAssociatedService;
 
+    @Mock
+    private VotingEnabledAssociatedRequestService consumingUserInfoService;
+
     @InjectMocks
     private RegisterVoteService registerVoteService;
 
@@ -60,16 +64,20 @@ class RegisterVoteServiceTest {
         VotingSession votingSession = mockVotingSession();
         votingSession.setEndDate(LocalDateTime.MAX);
         stave.setVotingSessionList(Collections.singletonList(votingSession));
+        VoteStatusDTO voteStatusDTO = new VoteStatusDTO();
+        voteStatusDTO.setStatus("ABLE_TO_VOTE");
 
         when(finderStaveService.findById(idStave)).thenReturn(stave);
         when(finderAssociatedService.findById(vote.getAssociated().getId())).thenReturn(associated);
         when(finderVoteService.findByVotingSessionIdAndAssociatedId(votingSession.getId(), associated.getId())).thenReturn(Optional.empty());
+        when(consumingUserInfoService.executeGetRequest(associated.getCpf())).thenReturn(voteStatusDTO);
 
         registerVoteService.registerVote(idStave, vote);
 
         verify(finderStaveService).findById(eq(idStave));
         verify(finderAssociatedService).findById(eq(vote.getAssociated().getId()));
         verify(finderVoteService).findByVotingSessionIdAndAssociatedId(eq(votingSession.getId()), eq(associated.getId()));
+        verify(consumingUserInfoService).executeGetRequest(eq(associated.getCpf()));
         verify(voteRepository).save(eq(vote));
     }
 
@@ -90,6 +98,7 @@ class RegisterVoteServiceTest {
         verify(finderStaveService).findById(eq(idStave));
         verify(finderAssociatedService, never()).findById(eq(vote.getAssociated().getId()));
         verify(finderVoteService, never()).findByVotingSessionIdAndAssociatedId(eq(votingSession.getId()), eq(associated.getId()));
+        verify(consumingUserInfoService, never()).executeGetRequest(eq(associated.getCpf()));
         verify(voteRepository, never()).save(eq(vote));
     }
 
@@ -112,6 +121,33 @@ class RegisterVoteServiceTest {
         verify(finderStaveService).findById(eq(idStave));
         verify(finderAssociatedService).findById(eq(vote.getAssociated().getId()));
         verify(finderVoteService).findByVotingSessionIdAndAssociatedId(eq(votingSession.getId()), eq(associated.getId()));
+        verify(consumingUserInfoService, never()).executeGetRequest(eq(associated.getCpf()));
+        verify(voteRepository, never()).save(eq(vote));
+    }
+
+    @Test
+    void shouldReturnBusinessExceptionWhenAssociatedNotEligibleToVote(){
+        UUID idStave = UUID.randomUUID();
+        Associated associated = mockAssociated();
+        Vote vote = mockVote();
+        Stave stave = mockStaveDefault();
+        VotingSession votingSession = mockVotingSession();
+        votingSession.setEndDate(LocalDateTime.MAX);
+        stave.setVotingSessionList(Collections.singletonList(votingSession));
+        VoteStatusDTO voteStatusDTO = new VoteStatusDTO();
+        voteStatusDTO.setStatus("UNABLE_TO_VOTE");
+
+        when(finderStaveService.findById(idStave)).thenReturn(stave);
+        when(finderAssociatedService.findById(vote.getAssociated().getId())).thenReturn(associated);
+        when(finderVoteService.findByVotingSessionIdAndAssociatedId(votingSession.getId(), associated.getId())).thenReturn(Optional.empty());
+        when(consumingUserInfoService.executeGetRequest(associated.getCpf())).thenReturn(voteStatusDTO);
+
+        assertThrows(BusinessException.class, () -> registerVoteService.registerVote(idStave, vote));
+
+        verify(finderStaveService).findById(eq(idStave));
+        verify(finderAssociatedService).findById(eq(vote.getAssociated().getId()));
+        verify(finderVoteService).findByVotingSessionIdAndAssociatedId(eq(votingSession.getId()), eq(associated.getId()));
+        verify(consumingUserInfoService).executeGetRequest(eq(associated.getCpf()));
         verify(voteRepository, never()).save(eq(vote));
     }
 }
