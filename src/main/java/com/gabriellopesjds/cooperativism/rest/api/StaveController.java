@@ -18,6 +18,7 @@ import com.gabriellopesjds.cooperativism.stave.application.service.StaveApplicat
 import com.gabriellopesjds.cooperativism.vote.application.service.VoteApplicationService;
 import com.gabriellopesjds.cooperativism.votingsession.application.service.VotingSessionApplicationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +36,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -42,6 +44,7 @@ import javax.validation.constraints.Min;
 @RequestMapping("api/v1/stave")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Validated
+@Slf4j
 public class StaveController {
 
     private final StaveApplicationService staveApplicationService;
@@ -49,26 +52,23 @@ public class StaveController {
     private final VoteApplicationService voteApplicationService;
 
     @PostMapping
-    public ResponseEntity<StaveResponseWrapperDTO> registerStave(@Valid @RequestBody StaveRequestDTO staveRequestDTO) {
-
+    public ResponseEntity<StaveResponseWrapperDTO> registerStave(@Valid @RequestBody StaveRequestDTO staveRequestDTO,
+                                                                 HttpServletRequest httpServletRequest) {
+        log.info("POST: {}. Stave register request has started.", httpServletRequest.getRequestURL());
         StaveResponseDTO responseDTO = staveApplicationService.registerStave(staveRequestDTO);
 
-        URI uri = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(responseDTO.getId())
-            .toUri();
+        URI uri =
+            ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
 
-        return ResponseEntity.created(uri)
-            .body(new StaveResponseWrapperDTO().data(responseDTO));
+        return ResponseEntity.created(uri).body(new StaveResponseWrapperDTO().data(responseDTO));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<StaveResponseWrapperDTO> updateStave(@PathVariable UUID id,
-                                                               @Valid @RequestBody StaveUpdateRequestDTO staveUpdateRequestDTO) {
-
-        StaveResponseDTO staveResponseDTO =
-            staveApplicationService.updateStave(id, staveUpdateRequestDTO);
+                                                               @Valid @RequestBody StaveUpdateRequestDTO staveUpdateRequestDTO,
+                                                               HttpServletRequest httpServletRequest) {
+        log.info("PUT: {}. Stave update request has started.", httpServletRequest.getRequestURL());
+        StaveResponseDTO staveResponseDTO = staveApplicationService.updateStave(id, staveUpdateRequestDTO);
 
         return ResponseEntity.accepted().body(new StaveResponseWrapperDTO().data(staveResponseDTO));
     }
@@ -77,60 +77,63 @@ public class StaveController {
     public ResponseEntity<StaveFinderResponseWrapperDTO> finderAllStave(@RequestParam(value = "pageSize", required = false, defaultValue = "20") @Valid @Min(1) Integer pageSize,
                                                                         @RequestParam(value = "pageNumber", required = false, defaultValue = "0") @Min(0) @Valid Integer pageNumber,
                                                                         @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") @Valid String sortDirection,
-                                                                        @RequestParam(value = "sortBy", required = false, defaultValue = "THEME") @Valid String sortBy) {
-
+                                                                        @RequestParam(value = "sortBy", required = false, defaultValue = "THEME") @Valid String sortBy,
+                                                                        HttpServletRequest httpServletRequest) {
+        log.info("GET: {}. Stave finder all request has started.", httpServletRequest.getRequestURL());
         StavePageableResponseDTO stavePageableResponseDTO =
             staveApplicationService.finderAllStave(pageSize, pageNumber, sortDirection, sortBy);
 
-        return stavePageableResponseDTO.getStaves().isEmpty()
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.ok(new StaveFinderResponseWrapperDTO().data(stavePageableResponseDTO));
+        return stavePageableResponseDTO.getStaves().isEmpty() ? ResponseEntity.noContent().build() :
+            ResponseEntity.ok(new StaveFinderResponseWrapperDTO().data(stavePageableResponseDTO));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<StaveResponseWrapperDTO> findStave(@PathVariable UUID id) {
+    public ResponseEntity<StaveResponseWrapperDTO> findStave(@PathVariable UUID id,
+                                                             HttpServletRequest httpServletRequest) {
+        log.info("GET: {}. Stave find by id request has started.", httpServletRequest.getRequestURL());
         StaveResponseDTO staveResponseDTO = staveApplicationService.findStave(id);
 
         return ResponseEntity.ok(new StaveResponseWrapperDTO().data(staveResponseDTO));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteStave(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteStave(@PathVariable UUID id, HttpServletRequest httpServletRequest) {
+        log.info("DELETE: {}. Stave delete request has started.", httpServletRequest.getRequestURL());
         staveApplicationService.deleteStave(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/voting-session")
-    public ResponseEntity<VotingSessionResponseWrapperDTO> registerVotingSession(@PathVariable UUID id, @Valid @RequestBody VotingSessionRequestDTO votingSessionRequestDTO) {
+    public ResponseEntity<VotingSessionResponseWrapperDTO> registerVotingSession(@PathVariable UUID id,
+                                                                                 @Valid @RequestBody VotingSessionRequestDTO votingSessionRequestDTO,
+                                                                                 HttpServletRequest httpServletRequest) {
+        log.info("POST: {}. Stave register voting session request has started.", httpServletRequest.getRequestURL());
+        VotingSessionResponseDTO responseDTO =
+            votingSessionApplicationService.registerVotingSession(id, votingSessionRequestDTO);
 
-        VotingSessionResponseDTO responseDTO = votingSessionApplicationService.registerVotingSession(id,votingSessionRequestDTO);
+        URI uri =
+            ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
 
-        URI uri = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(responseDTO.getId())
-            .toUri();
-
-        return ResponseEntity.created(uri)
-            .body(new VotingSessionResponseWrapperDTO().data(responseDTO));
+        return ResponseEntity.created(uri).body(new VotingSessionResponseWrapperDTO().data(responseDTO));
     }
 
     @PostMapping("{id}/voting-session/vote")
-    public ResponseEntity<VoteResponseWrapperDTO> registerVote(@PathVariable UUID id, @Valid @RequestBody VoteRequestDTO voteRequest) {
-
+    public ResponseEntity<VoteResponseWrapperDTO> registerVote(@PathVariable UUID id,
+                                                               @Valid @RequestBody VoteRequestDTO voteRequest,
+                                                               HttpServletRequest httpServletRequest) {
+        log.info("POST: {}. Stave register vote request has started.", httpServletRequest.getRequestURL());
         VoteResponseDTO responseDTO = voteApplicationService.registerVote(id, voteRequest);
 
-        URI uri = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(responseDTO.getId())
-            .toUri();
+        URI uri =
+            ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new VoteResponseWrapperDTO().data(responseDTO));
     }
 
     @GetMapping("{id}/voting-session/result")
-    public ResponseEntity<VotingSessionResultResponseWrapperDTO> contabilizeResultStave(@PathVariable UUID id) {
+    public ResponseEntity<VotingSessionResultResponseWrapperDTO> contabilizeResultStave(@PathVariable UUID id,
+                                                                                        HttpServletRequest httpServletRequest) {
+        log.info("GET: {}. Stave contabilize result request has started.", httpServletRequest.getRequestURL());
         VotingSessionResultResponseDTO staveResponseDTO = staveApplicationService.contabilizeResultStave(id);
 
         return ResponseEntity.ok(new VotingSessionResultResponseWrapperDTO().data(staveResponseDTO));
