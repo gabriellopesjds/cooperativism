@@ -11,6 +11,10 @@
 #### Diagrama de Classes
 ![class diagram](others/doc/classDiagram.png)
 
+#### Postman
++ Collections disponíveis para request: [clique aqui](others/doc/postman/Cooperativism.postman_collection)
++ Environments para as Collections disponíveis request: [clique aqui](others/doc/postman/cooperativism.postman_environment.json)
+
 ## API's disponíveis:
 
 #### Associated ( Associado )
@@ -20,7 +24,7 @@
 + Buscar um associado por ID ou CPF.
 + Buscar todos os associados com paginação.
 
-#### Assembly ( Assembléia )
+#### Assembly ( Assembleia )
 + Cadastrar uma assembleia.
 + Atualizar uma assembleia.
 + Remover uma assembleia
