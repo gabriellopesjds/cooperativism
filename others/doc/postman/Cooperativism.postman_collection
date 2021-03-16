@@ -1,0 +1,543 @@
+{
+	"info": {
+		"_postman_id": "5682e4c2-24d8-4264-9f81-93d77097f44c",
+		"name": "Cooperativism",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Stave",
+			"item": [
+				{
+					"name": "Register Stave",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"theme\": \"Theme .... 1\",\n  \"description\": \"Description ...\",\n  \"idAssembly\": \"73a45ab4-cda9-4ae2-aaaa-1344632c88fe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Voting Session",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"durationInMinutes\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave/359c8dd0-a730-48df-adae-dcc9f3663ed8/voting-session",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave",
+								"359c8dd0-a730-48df-adae-dcc9f3663ed8",
+								"voting-session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contabilize result of stave",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave/359c8dd0-a730-48df-adae-dcc9f3663ed8/voting-session/result",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave",
+								"359c8dd0-a730-48df-adae-dcc9f3663ed8",
+								"voting-session",
+								"result"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Vote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"voteType\": \"NO\",\n  \"idAssociated\": \"563b3874-e522-4d06-9395-b4da9c8fc74c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave/359c8dd0-a730-48df-adae-dcc9f3663ed8/voting-session/vote",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave",
+								"359c8dd0-a730-48df-adae-dcc9f3663ed8",
+								"voting-session",
+								"vote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Stave",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"theme\": \"New Theme\",\n  \"description\": \"new description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave/0a3600b3-1610-4164-9394-12eb86702a30",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave",
+								"0a3600b3-1610-4164-9394-12eb86702a30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finder All Staves",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave?pageSize=30&pageNumber=0&sortDirection=DESC&sortBy=THEMRE",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "30"
+								},
+								{
+									"key": "pageNumber",
+									"value": "0"
+								},
+								{
+									"key": "sortDirection",
+									"value": "DESC"
+								},
+								{
+									"key": "sortBy",
+									"value": "THEMRE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Stave",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave/0a3600b3-1610-4164-9394-12eb86702a30",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave",
+								"0a3600b3-1610-4164-9394-12eb86702a30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Stave",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/stave/645e8210-451c-40e1-a28b-675b241ec8e3",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stave",
+								"645e8210-451c-40e1-a28b-675b241ec8e3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assembly",
+			"item": [
+				{
+					"name": "Register Assembly",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Assembleia 2022\",\n  \"date\": \"2021-03-21T03:00:00\",\n  \"staves\": [\n    {\n      \"theme\": \"Tema da pauta ... \",\n      \"description\": \"Descrição ...\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/assembly",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assembly"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Assembly",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"theme\": \"New Theme\",\n  \"description\": \"new description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/assembly/0a3600b3-1610-4164-9394-12eb86702a30",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assembly",
+								"0a3600b3-1610-4164-9394-12eb86702a30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finder All Assembly",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/assembly?pageSize=30&pageNumber=0&sortDirection=DESC",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assembly"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "30"
+								},
+								{
+									"key": "pageNumber",
+									"value": "0"
+								},
+								{
+									"key": "sortDirection",
+									"value": "DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Assembly",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/assembly/73a45ab4-cda9-4ae2-aaaa-1344632c88fe",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assembly",
+								"73a45ab4-cda9-4ae2-aaaa-1344632c88fe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Assembly",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/assembly/73a45ab4-cda9-4ae2-aaaa-1344632c88fe",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"assembly",
+								"73a45ab4-cda9-4ae2-aaaa-1344632c88fe"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Associated",
+			"item": [
+				{
+					"name": "Register Associated",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Gabriel Lopes\",\n  \"cpf\": \"67609921050\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Associated",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated/a9db4eb1-7b54-4819-b206-01ee5157904b",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated",
+								"a9db4eb1-7b54-4819-b206-01ee5157904b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finder All Associated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated?pageSize=20&pageNumber=0&sortDirection=DESC",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "20"
+								},
+								{
+									"key": "pageNumber",
+									"value": "0"
+								},
+								{
+									"key": "sortDirection",
+									"value": "DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Associated",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated/a9db4eb1-7b54-4819-b206-01ee5157904b",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated",
+								"a9db4eb1-7b54-4819-b206-01ee5157904b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Associated By CPF",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated/cpf/65732190073",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated",
+								"cpf",
+								"65732190073"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Associated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated/a9db4eb1-7b54-4819-b206-01ee5157904b",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated",
+								"a9db4eb1-7b54-4819-b206-01ee5157904b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Associated By CPF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cooperativism_url}}/api/v1/associated/cpf/65732190073",
+							"host": [
+								"{{cooperativism_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"associated",
+								"cpf",
+								"65732190073"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
