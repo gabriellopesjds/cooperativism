@@ -15,9 +15,9 @@ services:
 
   cooperativism-api:
     container_name: cooperativism-api
-    # build:
-    #   context: ./
-    #   dockerfile: ./Dockerfile
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     image: cooperativism-api:${IMAGE_VERSION}
     ports:
       - "8080:8080"
