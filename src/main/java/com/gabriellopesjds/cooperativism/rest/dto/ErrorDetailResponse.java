@@ -14,5 +14,4 @@ public class ErrorDetailResponse {
 	private String field;
 	private String code;
 	private String message;
-	private String action;
 }
