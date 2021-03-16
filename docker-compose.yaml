@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db: 
+    container_name: db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: cooperativism
+      MYSQL_USER: cooperativism
+      MYSQL_PASSWORD: cooperativism
+    ports:
+        - 3306:3306
+    volumes:
+        - ./database:/var/lib/mysql  
+
+  cooperativism-api:
+    container_name: cooperativism-api
+    # build:
+    #   context: ./
+    #   dockerfile: ./Dockerfile
+    image: cooperativism-api:${IMAGE_VERSION}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db 
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}  
