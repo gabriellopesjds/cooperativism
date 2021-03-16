@@ -8,6 +8,7 @@ import com.gabriellopesjds.api.model.AssemblyResponseWrapperDTO;
 import com.gabriellopesjds.api.model.AssemblyUpdateRequestDTO;
 import com.gabriellopesjds.cooperativism.assembly.application.service.AssemblyApplicationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
@@ -32,29 +34,30 @@ import javax.validation.constraints.Min;
 @RequestMapping("api/v1/assembly")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Validated
+@Slf4j
 public class AssemblyController {
 
     private final AssemblyApplicationService assemblyApplicationService;
 
     @PostMapping
-    public ResponseEntity<AssemblyResponseWrapperDTO> registerAssembly(@Valid @RequestBody AssemblyRequestDTO assemblyRequestDTO) {
+    public ResponseEntity<AssemblyResponseWrapperDTO> registerAssembly(@Valid @RequestBody AssemblyRequestDTO assemblyRequestDTO,
+                                                                       HttpServletRequest httpServletRequest) {
 
+        log.info("POST: {}. Assembly register request has started.", httpServletRequest.getRequestURL());
         AssemblyResponseDTO responseDTO = assemblyApplicationService.registerAssembly(assemblyRequestDTO);
 
-        URI uri = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(responseDTO.getId())
-            .toUri();
+        URI uri =
+            ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(responseDTO.getId()).toUri();
 
-        return ResponseEntity.created(uri)
-            .body(new AssemblyResponseWrapperDTO().data(responseDTO));
+        return ResponseEntity.created(uri).body(new AssemblyResponseWrapperDTO().data(responseDTO));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<AssemblyResponseWrapperDTO> updateAssembly(@PathVariable UUID id,
-                                                                     @Valid @RequestBody AssemblyUpdateRequestDTO assemblyUpdateRequestDTO) {
+                                                                     @Valid @RequestBody AssemblyUpdateRequestDTO assemblyUpdateRequestDTO,
+                                                                     HttpServletRequest httpServletRequest) {
 
+        log.info("PUT: {}. Assembly update request has started.", httpServletRequest.getRequestURL());
         AssemblyResponseDTO assemblyResponseDTO =
             assemblyApplicationService.updateAssembly(id, assemblyUpdateRequestDTO);
 
@@ -64,25 +67,27 @@ public class AssemblyController {
     @GetMapping
     public ResponseEntity<AssemblyFinderResponseWrapperDTO> finderAllAssembly(@RequestParam(value = "pageSize", required = false, defaultValue = "20") @Valid @Min(1) Integer pageSize,
                                                                               @RequestParam(value = "pageNumber", required = false, defaultValue = "0") @Min(0) @Valid Integer pageNumber,
-                                                                              @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") @Valid String sortDirection) {
-
+                                                                              @RequestParam(value = "sortDirection", required = false, defaultValue = "ASC") @Valid String sortDirection,
+                                                                              HttpServletRequest httpServletRequest) {
+        log.info("GET: {}. Assembly finder all request has started.", httpServletRequest.getRequestURL());
         AssemblyPageableResponseDTO assemblyPageableResponseDTO =
             assemblyApplicationService.finderAllAssembly(pageSize, pageNumber, sortDirection);
 
-        return assemblyPageableResponseDTO.getAssemblys().isEmpty()
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.ok(new AssemblyFinderResponseWrapperDTO().data(assemblyPageableResponseDTO));
+        return assemblyPageableResponseDTO.getAssemblys().isEmpty() ? ResponseEntity.noContent().build() :
+            ResponseEntity.ok(new AssemblyFinderResponseWrapperDTO().data(assemblyPageableResponseDTO));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AssemblyResponseWrapperDTO> findAssembly(@PathVariable UUID id) {
+    public ResponseEntity<AssemblyResponseWrapperDTO> findAssembly(@PathVariable UUID id,
+                                                                   HttpServletRequest httpServletRequest) {
+        log.info("GET: {}. Assembly finder by id request has started.", httpServletRequest.getRequestURL());
         AssemblyResponseDTO assemblyResponseDTO = assemblyApplicationService.findAssembly(id);
-
         return ResponseEntity.ok(new AssemblyResponseWrapperDTO().data(assemblyResponseDTO));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteAssembly(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteAssembly(@PathVariable UUID id, HttpServletRequest httpServletRequest) {
+        log.info("GET: {}. Assembly delete by id request has started.", httpServletRequest.getRequestURL());
         assemblyApplicationService.deleteAssembly(id);
         return ResponseEntity.noContent().build();
     }

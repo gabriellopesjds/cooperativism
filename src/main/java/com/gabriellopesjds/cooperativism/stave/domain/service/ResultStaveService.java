@@ -5,6 +5,7 @@ import com.gabriellopesjds.cooperativism.vote.domain.model.enumerated.VoteTypeEn
 import com.gabriellopesjds.cooperativism.votingsession.domain.model.VotingSession;
 import com.gabriellopesjds.cooperativism.votingsession.domain.model.enumerated.VotingSessionStateEnum;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +17,14 @@ import static com.gabriellopesjds.cooperativism.votingsession.domain.model.enume
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class ResultStaveService {
 
     private final FinderStaveService finderStaveService;
 
     public Stave contabilizeResultStave(UUID idStave){
+        log.info("Contabilize result of stave id: {}", idStave);
+
         Stave stave = finderStaveService.findById(idStave);
         stave.getVotingSessionList()
             .forEach(votingSession -> {
@@ -36,6 +40,7 @@ public class ResultStaveService {
                 votingSession.setTotalNegativeVotes(totalNegativeVotes);
                 votingSession.setStateEnum(stateEnum);
             });
+            log.debug("Stave Voting Session Result: {}", stave);
         return stave;
     }
 
