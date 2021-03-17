@@ -1,5 +1,8 @@
 # Cooperativism API.
 
+Servidor para testes: [https://cooperativism-api.herokuapp.com/api/v1](https://cooperativism-api.herokuapp.com)
+
+
 ## Documentações
 
 #### OpenApi
@@ -97,7 +100,7 @@ mvn clean install -Pdocker
 docker-compose up
 ```
 
-###### Verifique a aplicação no endereço :
+###### Verifique a aplicação local no endereço :
 
 ```sh
 urlBase: 127.0.0.1:8080/api/v1
