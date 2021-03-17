@@ -8,7 +8,7 @@ base_url: /api/v1
 ## Documentações
 
 #### OpenApi
-+ Especificação OpenApi dos serviços: [clique aqui](src/main/resources/openapi/spec.yaml).
++ Especificação OpenApi dos serviços: [clique aqui](https://cooperativism-api-doc.herokuapp.com).
 
 #### Detalhes dos serviços
 + Para detalhes sobre os serviços disponíveis, veja  [documentação completa da API.](others/doc/documentationV100.html)
