@@ -17,7 +17,7 @@ servers:
 paths:
   /v1/stave:
     post:
-      summary: "Stave registrationx."
+      summary: "Stave registration."
       description: "Register an stave."
       tags:
         - Stave
