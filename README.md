@@ -98,7 +98,16 @@ A figura abaixo resume as interações permitidas entre os layers:
 
 ![layers dependencies](others/doc/layers.png)
 
+**Controle de versão**
+O Fluxo de versionamento de código é o **GITFLOW**.
 
+|Branch|Especificação|
+|---------|-------------------|
+|feature| utilizado para novas implementações|
+|release| utilizadao para finalizar o release e tags|
+|hotfix| utilizado para resolver problema crítico em produção que não pode esperar novo release|
+|develop| contém conter todo o fluxo de trabalho que irá ocorrer antes de fazer o release final. |
+|master| irá contér todo código já testado, versionado que será entregue ao cliente|
 
 ### Executando a API no localhost utilizando o docker
 ```sh
