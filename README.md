@@ -1,6 +1,7 @@
 # Cooperativism API.
 
 Servidor para testes: [clique aqui](https://cooperativism-api.herokuapp.com/api/v1).
+
 base_url: /api/v1
 
 
@@ -44,6 +45,10 @@ base_url: /api/v1
 + Criar uma sessão de votação em uma pauta.
 + Votar em uma pauta
 + Contabilizar o resultado na pauta.
+
+**ID Assembleia default:** 73a45ab4-cda9-4ae2-aaaa-1344632c88fe
+**ID Associated default:** 77a6b51e-7f96-4b5b-8627-6ecfb0c22785 **CPF:** 77995351054
+
 
 ## Configurações
 
