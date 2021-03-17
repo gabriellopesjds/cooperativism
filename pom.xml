@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.gabriellopesjds</groupId>
     <artifactId>cooperativism</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-rc</version>
     <name>cooperativism</name>
     <description>REST API of voting session on an stave of an assembly in a cooperative.</description>
 
