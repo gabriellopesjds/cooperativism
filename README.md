@@ -11,7 +11,7 @@ base_url: /api/v1
 + Especificação OpenApi dos serviços: [clique aqui](src/main/resources/openapi/spec.yaml).
 
 #### Detalhes dos serviços
-+ Para detalhes sobre os serviços disponíveis, veja  [documentação completa da API.](src/main/resources/openapi/documentationV100.html)
++ Para detalhes sobre os serviços disponíveis, veja  [documentação completa da API.](others/doc/documentationV100.html)
 
 #### Diagrama de Classes
 ![class diagram](others/doc/classDiagram.png)
