@@ -1,6 +1,7 @@
 # Cooperativism API.
 
-Servidor para testes: [https://cooperativism-api.herokuapp.com/api/v1](https://cooperativism-api.herokuapp.com)
+Servidor para testes: [clique aqui](https://cooperativism-api.herokuapp.com/api/v1).
+base_url: /api/v1
 
 
 ## Documentações
